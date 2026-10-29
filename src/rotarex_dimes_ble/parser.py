@@ -59,9 +59,8 @@ class RotarexDimesBluetoothDeviceData(BluetoothData):
             _LOGGER.debug("Out of range Rotarex payload: %s", data.hex())
             return
 
-        name = (
-            f"{service_info.name or 'Dimes Wave'} {short_address(service_info.address)}"
-        )
+        # The local name is only in the scan response, so passive scans don't get it
+        name = f"Dimes Wave {short_address(service_info.address)}"
         self.set_title(name)
         self.set_device_manufacturer("Rotarex")
         self.set_device_type("Dimes Wave")

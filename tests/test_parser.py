@@ -27,9 +27,10 @@ def make_service_info(
     payload: bytes,
     service_uuids: list[str] | None = None,
     manufacturer_id: int = 0xFFFF,
+    name: str = "SRG-1-WAVE",
 ) -> BluetoothServiceInfo:
     return BluetoothServiceInfo(
-        name="SRG-1-WAVE",
+        name=name,
         address=ADDRESS,
         rssi=-69,
         manufacturer_data={manufacturer_id: payload},
@@ -48,10 +49,10 @@ def test_parse_captured_advertisement() -> None:
     parser = RotarexDimesBluetoothDeviceData(Region.OTHER, TankType.CYLINDER)
     assert parser.supported(make_service_info(CAPTURED_FULL_BATTERY))
     assert parser.update(make_service_info(CAPTURED_FULL_BATTERY)) == SensorUpdate(
-        title="SRG-1-WAVE EEFF",
+        title="Dimes Wave EEFF",
         devices={
             None: SensorDeviceInfo(
-                name="SRG-1-WAVE EEFF",
+                name="Dimes Wave EEFF",
                 model="Dimes Wave",
                 manufacturer="Rotarex",
                 sw_version=None,
@@ -93,6 +94,14 @@ def test_parse_captured_advertisement() -> None:
             ),
         },
     )
+
+
+def test_passive_advertisement_without_local_name() -> None:
+    # Home Assistant uses the address as name when the scan response is missing
+    parser = RotarexDimesBluetoothDeviceData()
+    update = parser.update(make_service_info(CAPTURED_FULL_BATTERY, name=ADDRESS))
+    assert update.title == "Dimes Wave EEFF"
+    assert update.devices[None].name == "Dimes Wave EEFF"
 
 
 @pytest.mark.parametrize(
