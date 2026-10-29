@@ -38,11 +38,11 @@ The sensor reports a raw level. Like the ROTAREX DIMES app, the parser converts 
 
 - Service UUID: `2b67836a-183d-45da-a1bf-381b05e1bde8`
 - Manufacturer data, company identifier `0xFFFF`, 4 bytes:
-  - byte 0: not used
+  - byte 0: not used (seen as 0 or 1)
   - byte 1: battery level in %
   - byte 2: raw gas level in %
   - byte 3: not used
-- The data is in the main advertisement packet, not the scan response, so passive scanning is enough.
+- The main advertisement packet (`ADV_IND`) holds the flags, the service UUID and the manufacturer data, so passive scanning is enough. The scan response only holds the local name `SRG-1-WAVE` and the TX power.
 - The sensor advertises continuously, but refreshes the measured values every 20 minutes.
 - A payload of only zeros is sent right after a battery change or power on and is ignored.
 
