@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rotarex-dimes-ble"
+version = "0.1.0"
+description = "Parser for Rotarex Dimes Wave Bluetooth Low Energy advertisements"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Typing :: Typed",
+]
+authors = [
+  { name = "ROTAREX", email = "develop@rotarex.com" }
+]
+dependencies = [
+  "bluetooth-data-tools>=1.0.0",
+  "bluetooth-sensor-state-data>=1.6.0",
+  "home-assistant-bluetooth>=1.10.0",
+  "sensor-state-data>=2.18.0",
+]
+
+[project.optional-dependencies]
+test = [
+  "mypy",
+  "pytest",
+  "ruff",
+]
+
+[project.urls]
+Homepage = "https://github.com/Rotarex-Innovation/rotarex-dimes-ble"
+Repository = "https://github.com/Rotarex-Innovation/rotarex-dimes-ble"
+Issues = "https://github.com/Rotarex-Innovation/rotarex-dimes-ble/issues"
+
+[tool.setuptools.package-data]
+rotarex_dimes_ble = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
