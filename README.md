@@ -42,6 +42,8 @@ The sensor reports a raw level. Like the ROTAREX DIMES app, the parser converts 
   - byte 1: battery level in %
   - byte 2: raw gas level in %
   - byte 3: not used
+- The data is in the main advertisement packet, not the scan response, so passive scanning is enough.
+- The sensor advertises continuously, but refreshes the measured values every 20 minutes.
 - A payload of only zeros is sent right after a battery change or power on and is ignored.
 
 ## Development
