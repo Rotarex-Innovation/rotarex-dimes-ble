@@ -1,3 +1,5 @@
+"""Settings of the ROTAREX DIMES app that change how the level is shown."""
+
 from __future__ import annotations
 
 from enum import StrEnum

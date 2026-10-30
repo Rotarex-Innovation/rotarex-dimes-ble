@@ -147,10 +147,7 @@ def test_convert_level_edges(
 @pytest.mark.parametrize(
     "service_info",
     [
-        pytest.param(make_service_info(bytes(4)), id="reset_zeros"),
         pytest.param(make_service_info(bytes.fromhex("005914")), id="short"),
-        pytest.param(make_service_info(bytes.fromhex("00651414")), id="battery_101"),
-        pytest.param(make_service_info(bytes.fromhex("00596514")), id="level_101"),
         pytest.param(
             make_service_info(CAPTURED_FULL_BATTERY, service_uuids=[]),
             id="no_service_uuid",
@@ -164,3 +161,23 @@ def test_convert_level_edges(
 def test_ignored_advertisements(service_info: BluetoothServiceInfo) -> None:
     parser = RotarexDimesBluetoothDeviceData()
     assert not parser.supported(service_info)
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        pytest.param(bytes(4), id="reset_zeros"),
+        pytest.param(bytes.fromhex("00651414"), id="battery_101"),
+        pytest.param(bytes.fromhex("00596514"), id="level_101"),
+    ],
+)
+def test_sensor_without_valid_reading(payload: bytes) -> None:
+    # Recognizing the sensor lets discovery succeed right after a battery change
+    parser = RotarexDimesBluetoothDeviceData()
+    service_info = make_service_info(payload)
+    assert parser.supported(service_info)
+    update = parser.update(service_info)
+    assert update.title == "Dimes Wave EEFF"
+    assert set(update.entity_values) == {
+        DeviceKey(key="signal_strength", device_id=None)
+    }

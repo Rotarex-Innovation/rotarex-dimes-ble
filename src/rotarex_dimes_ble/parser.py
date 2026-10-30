@@ -51,13 +51,6 @@ class RotarexDimesBluetoothDeviceData(BluetoothData):
         if len(data) != PAYLOAD_LENGTH:
             _LOGGER.debug("Unexpected Rotarex payload length: %s", data.hex())
             return
-        # The sensor advertises zeros right after a battery change or power on
-        if not any(data):
-            return
-        battery, raw_level = data[1], data[2]
-        if battery > 100 or raw_level > 100:
-            _LOGGER.debug("Out of range Rotarex payload: %s", data.hex())
-            return
 
         # The local name is only in the scan response, so passive scans don't get it
         name = f"Dimes Wave {short_address(service_info.address)}"
@@ -65,6 +58,14 @@ class RotarexDimesBluetoothDeviceData(BluetoothData):
         self.set_device_manufacturer("Rotarex")
         self.set_device_type("Dimes Wave")
         self.set_device_name(name)
+
+        # The sensor advertises zeros right after a battery change or power on
+        if not any(data):
+            return
+        battery, raw_level = data[1], data[2]
+        if battery > 100 or raw_level > 100:
+            _LOGGER.debug("Out of range Rotarex payload: %s", data.hex())
+            return
         self.update_predefined_sensor(SensorLibrary.BATTERY__PERCENTAGE, battery)
         self.update_sensor(
             key="level",
